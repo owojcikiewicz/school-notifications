@@ -43,7 +43,7 @@ def send_webhook(message):
 
 
 def check_messages():
-    messages_list = list(client.get_messages(datetime.datetime(2020, 1, 1)))
+    messages_list = list(client.get_messages())
     for message in messages_list:
         if message.id in message_ids:
             continue
