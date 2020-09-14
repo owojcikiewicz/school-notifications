@@ -4,4 +4,4 @@ Due to the COVID-19 pandemic all schools in Poland were shut down in March, by t
 The initial project was a Discord bot created in Lua, I decided to re-write it in Python and use webhooks instead of bots. 
 
 ### Installation 
-Open the configuration file located at `school-notifications/config.py`, enter the necessary data and install all necessary dependencies. After that, simply run the script using `python school-notifications/main.py`. 
+Open the configuration file located at `school-notifications/config.py`, enter the necessary data and install all necessary dependencies. After that, simply run the script using `python school-notifications/main.py`. Please keep in mind that this is only suitable for [UONET](https://www.vulcan.edu.pl/programy/e-dziennik-uonet-87) gradebook devloped by [Vulcan](https://www.vulcan.edu.pl/).
