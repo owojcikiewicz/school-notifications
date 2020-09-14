@@ -39,7 +39,10 @@ def send_webhook(message):
         config.discord_user_id, message.title, message.sender.name, message.sent_time, message.content
     )
     webhook = DiscordWebhook(url=config.webhook_url, content=text)
-    webhook.execute()
+    try:
+        webhook.execute()
+    except:
+        print("Error while sending webhook occurred!")
 
 
 def check_messages():
@@ -58,5 +61,3 @@ schedule.every(config.check_time).minutes.do(check_messages)
 while 1:
     schedule.run_pending()
     time.sleep(1)
-
-
