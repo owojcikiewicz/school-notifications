@@ -1,2 +1,5 @@
 # Project Config.
-credentials = ["TOKEN", "SYMBOL", "PIN"]
+credentials = ["", "", ""]
+webhook_url = ""
+discord_user_id = ""
+check_time = 1
