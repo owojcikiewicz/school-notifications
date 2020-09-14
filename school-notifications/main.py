@@ -5,7 +5,6 @@ import json
 import schedule
 import time
 from os import path
-import datetime
 
 # Generate Certificate.
 if path.exists("./cert.json"):
