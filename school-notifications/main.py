@@ -51,15 +51,14 @@ def check_messages():
     log("Checking messages...")
     messages_list = list(client.get_messages())
     for message in messages_list:
-        if message is None or message.sender is None:
+        if message is None or message.sender is None or message.id is None:
             log("Invalid message, skipping...")
             continue
 
-        if message.id in message_ids or message.is_read:
+        if message.id in message_ids:
             log("Found message in cache, skipping...")
             continue
         else:
-            print(message)
             message_ids.append(message.id)
             send_webhook(message)
             save_messages()
