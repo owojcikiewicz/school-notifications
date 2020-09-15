@@ -1,12 +1,12 @@
-from vulcan import Vulcan
-from discord_webhook import DiscordWebhook
 import config
 import json
 import schedule
 import time
+import datetime
+from vulcan import Vulcan
+from discord_webhook import DiscordWebhook
 from os import path
 
-# Generate Certificate.
 if path.exists("./cert.json"):
     with open("./cert.json") as f:
         certificate = json.load(f)
@@ -17,7 +17,6 @@ else:
     with open("./cert.json", "w") as f:
         json.dump(certificate.json, f)
 
-# Retrieve Data.
 if path.exists("./messages.txt"):
     with open("./messages.txt") as f:
         message_ids = json.load(f)
@@ -27,7 +26,11 @@ else:
         json.dump(message_ids, f)
 
 
-# Basic Functions.
+def log(message):
+    ts = time.time()
+    print("[" + datetime.datetime.fromtimestamp(ts).strftime('%H:%M %d/%m/%Y') + "]" + " " + message)
+
+
 def save_messages():
     with open("./messages.txt", "w") as fl:
         json.dump(message_ids, fl)
@@ -45,18 +48,25 @@ def send_webhook(message):
 
 
 def check_messages():
+    log("Checking messages...")
     messages_list = list(client.get_messages())
     for message in messages_list:
-        if message.id in message_ids:
+        if message is None or message.sender is None:
+            log("Invalid message, skipping...")
+            continue
+
+        if message.id in message_ids or message.is_read:
+            log("Found message in cache, skipping...")
             continue
         else:
+            print(message)
             message_ids.append(message.id)
             send_webhook(message)
             save_messages()
 
 
-# Timers.
 schedule.every(config.check_time).minutes.do(check_messages)
+log("Starting app...")
 while 1:
     schedule.run_pending()
     time.sleep(1)
