@@ -43,6 +43,5 @@ def read_message(message_id):
         "FolderWiadomosci": "Usuniete",
         "Status": "Widoczna"
     }
-    
-   
+
     client._api.post("Uczen/ZmienStatusWiadomosci", json=data)
