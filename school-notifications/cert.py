@@ -3,8 +3,6 @@ import config
 import json
 from os import path
 
-message_cache = []
-
 if path.exists("./cert.json"):
     with open("./cert.json") as f:
         certificate = json.load(f)
@@ -22,3 +20,11 @@ else:
     message_cache = []
     with open("./messages.txt", "w") as f:
         json.dump(message_cache, f)
+
+if path.exists("./homework.txt"):
+    with open("./homework.txt") as f:
+        homework_cache = json.load(f)
+else:
+    homework_cache = []
+    with open("./homework.txt", "w") as f:
+        json.dump(homework_cache, f)
