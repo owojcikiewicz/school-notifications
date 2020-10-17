@@ -1,30 +1,12 @@
-import config
 import json
+import config
 import schedule
 import time
 import datetime
+from cert import message_cache
+from cert import client
 from vulcan import Vulcan
 from discord_webhook import DiscordWebhook
-from os import path
-
-if path.exists("./cert.json"):
-    with open("./cert.json") as f:
-        certificate = json.load(f)
-        client = Vulcan(certificate)
-else:
-    certificate = Vulcan.register(config.credentials[0], config.credentials[1], config.credentials[2])
-    client = Vulcan(certificate)
-    with open("./cert.json", "w") as f:
-        json.dump(certificate.json, f)
-
-if path.exists("./messages.txt"):
-    with open("./messages.txt") as f:
-        message_ids = json.load(f)
-else:
-    message_ids = []
-    with open("./messages.txt", "w") as f:
-        json.dump(message_ids, f)
-
 
 def log(message):
     ts = time.time()
@@ -33,7 +15,7 @@ def log(message):
 
 def save_messages():
     with open("./messages.txt", "w") as fl:
-        json.dump(message_ids, fl)
+        json.dump(message_cache, fl)
 
 
 def send_webhook(message):
@@ -51,21 +33,22 @@ def check_messages():
     log("Checking messages...")
     messages_list = list(client.get_messages())
     for message in messages_list:
-        if message is None or message.sender is None or message.id is None:
+        if not message or not message.sender:
+            message_cache.append(message.id)
             log("Invalid message, skipping...")
             continue
 
-        if message.id in message_ids:
-            log("Found message in cache, skipping...")
+        if message.id in message_cache:
+            log("Message found in cache, skipping...")
             continue
         else:
-            message_ids.append(message.id)
+            message_cache.append(message.id)
             send_webhook(message)
             save_messages()
 
 
-schedule.every(config.check_time).minutes.do(check_messages)
 log("Starting app...")
+schedule.every(config.check_time).minutes.do(check_messages)
 while 1:
     schedule.run_pending()
     time.sleep(1)
