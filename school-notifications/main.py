@@ -3,40 +3,30 @@ import config
 import schedule
 import time
 from datetime import date, timedelta, datetime
-from cert import message_cache
-from cert import homework_cache
-from cert import client
+from utils import client, message_cache, homework_cache, save_messages, read_message, save_homework
 from discord_webhook import DiscordWebhook
 
 def log(message):
     ts = time.time()
     print("[" + datetime.fromtimestamp(ts).strftime('%H:%M %d/%m/%Y') + "]" + " " + message)
 
-def save_homework(): 
-    with open("./messages.txt", "w") as fl: 
-        json.dump(homework_cache, fl) 
-
-def save_messages():
-    with open("./messages.txt", "w") as fl:
-        json.dump(message_cache, fl)
-
 def send_webhook(content):
     webhook = DiscordWebhook(url=config.webhook_url, content=content)
     try:
         webhook.execute()
     except:
-        print("Error while sending webhook occurred!")
+        log("Error while sending webhook occurred!")
 
 
 def send_message(message):
     text = "<@%s>\n**Tytuł:** %s\n**Nadawca:** %s\n**Godzina:** %s\n**Treść:**```%s```" % (
-        config.discord_user_id, message.title, message.sender.name, message.sent_time, message.content
+        config.discord_user_id, message.title, message.sender.name, message.sent_time.strftime("%H:%M"), message.content
     )
     send_webhook(text)
 
 def send_homework(homework):
     text = "<@%s>\n**Przedmiot:** %s\n**Termin:** %s\n**Treść:**```%s```" % (
-        config.discord_user_id, homework.subject.name, homework.date, homework.description
+        config.discord_user_id, homework.subject.name, homework.date.strftime("%d.%m.%Y"), homework.description
     )
     send_webhook(text)
 
@@ -52,10 +42,11 @@ def check_messages():
 
         if message.id in message_cache:
             log("Message found in cache, skipping...")
-            continue
+            break
         else:
             message_cache.append(message.id)
             send_message(message)
+            read_message(message.id)
             save_messages()
 
 def check_homework():
@@ -64,7 +55,7 @@ def check_homework():
         homework = client.get_homework(date.today() + timedelta(days=i))
         homework_list = list(homework)
         for homework in homework_list: 
-            if not homework or not homework.description: 
+            if not homework: 
                 homework_cache.append(homework.id)
                 log("Invalid homework, skipping...")
                 continue
