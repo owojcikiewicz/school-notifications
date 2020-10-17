@@ -1,7 +1,7 @@
-from vulcan import Vulcan
 import config
 import json
 from os import path
+from vulcan import Vulcan
 
 if path.exists("./cert.json"):
     with open("./cert.json") as f:
@@ -28,3 +28,21 @@ else:
     homework_cache = []
     with open("./homework.txt", "w") as f:
         json.dump(homework_cache, f)
+
+def save_homework(): 
+    with open("./homework.txt", "w") as fl: 
+        json.dump(homework_cache, fl) 
+
+def save_messages():
+    with open("./messages.txt", "w") as fl:
+        json.dump(message_cache, fl)
+
+def read_message(message_id):
+    data = {
+        "WiadomoscID": message_id,
+        "FolderWiadomosci": "Usuniete",
+        "Status": "Widoczna"
+    }
+    
+   
+    client._api.post("Uczen/ZmienStatusWiadomosci", json=data)
