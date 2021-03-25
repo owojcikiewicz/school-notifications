@@ -49,14 +49,17 @@ async def main():
     global homework_cache 
 
     log("Starting app...")
-    client, homework_cache = await setup_client()
 
     # Check Homework.
-    await check_homework(client, homework_cache)
-
-    log("Stopping app...")
-    await client.close()
-
-if __name__ == "__main__": 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    for i in range(0, 100): 
+        while True: 
+            try: 
+                client, homework_cache = await setup_client()
+                await check_homework(client, homework_cache)
+                await client.close()
+                log("Stopping app...")
+                return
+            except: 
+                log("Error occurred when initializing client, retrying...")
+                continue 
+            break 
