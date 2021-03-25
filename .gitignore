@@ -1,14 +1,6 @@
 
 *.pyc
 
-cert.json
-
-messages.txt
-
 homework.txt
-
 account.json
-
 keystore.json
-
-school-notifications/config.py
