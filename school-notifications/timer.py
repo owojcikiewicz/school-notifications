@@ -1,8 +1,7 @@
 import sched, time
 import asyncio
 from main import main
-import config
-import os   
+import config  
 
 s = sched.scheduler(time.time, time.sleep)
 def check(sc): 

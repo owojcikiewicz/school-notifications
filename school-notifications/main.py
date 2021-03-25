@@ -1,7 +1,6 @@
 import json
 import config
 import time
-import asyncio
 from datetime import date, timedelta, datetime
 from utils import setup_client, save_homework
 from discord_webhook import DiscordWebhook
@@ -60,6 +59,6 @@ async def main():
                 log("Stopping app...")
                 return
             except: 
-                log("Error occurred when initializing client, retrying...")
+                log("Error occurred when checking homework, retrying...")
                 continue 
             break 
